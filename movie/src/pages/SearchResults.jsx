@@ -19,7 +19,7 @@ function SearchResults() {
 
   return (
     <div style={styles.container}>
-      <h2 style={styles.heading}>Search Results for: "{query}"</h2>
+      <h2 style={styles.heading}>More Search Results for: "{query}"</h2>
       {movies.length > 0 ? (
         <div style={styles.grid}>
           {movies.map((movie) => (
