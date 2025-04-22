@@ -8,9 +8,9 @@ function Navbar() {
   const [hovered, setHovered] = useState(null);
   const [activeDropdown, setActiveDropdown] = useState(null);
   const [selectedFilters, setSelectedFilters] = useState({
-    genre: '',
-    country: '',
-    year: '',
+    genre: [],
+    country: [],
+    year: [],
   });
 
   const navigate = useNavigate();
@@ -19,17 +19,6 @@ function Navbar() {
     if (e.key === 'Enter' && e.target.value.trim() !== '') {
       navigate(`/search/${e.target.value}`);
     }
-  };
-
-  const handleFilterSelect = (category, value) => {
-   // Filtreyi güncellerken doğru bir şekilde güncelleme yapalım
-   const updatedFilters = { ...selectedFilters, [category]: value };
-   setSelectedFilters(updatedFilters);
-
-   // URLSearchParams kullanarak URL'yi güncelle
-   const urlParams = new URLSearchParams(updatedFilters);  // Güncellenmiş filtreyi kullanıyoruz
-
-    navigate(`/filter-results?${urlParams.toString()}`);
   };
 
   return (
@@ -70,15 +59,44 @@ function Navbar() {
                 </button>
                 {activeDropdown === item.text.toLowerCase() && (
                   <ul style={styles.dropdownMenu}>
-                    {item.options.map((option, idx) => (
-                      <li
-                        key={idx}
-                        style={styles.dropdownItem}
-                        onClick={() => handleFilterSelect(item.text.toLowerCase(), option)}
-                      >
-                        {option}
-                      </li>
-                    ))}
+                    {item.options.map((option, idx) => {
+                      const category = item.text.toLowerCase();
+                      const isChecked = selectedFilters[category]?.includes(option);
+
+                      return (
+                        <li
+                          key={idx}
+                          style={{ ...styles.dropdownItem, display: 'flex', alignItems: 'center', gap: '8px' }}
+                        >
+                          <input
+                            type="checkbox"
+                            checked={isChecked || false}
+                            onChange={() => {
+                              const updatedOptions = isChecked
+                                ? selectedFilters[category].filter(val => val !== option)
+                                : [...(selectedFilters[category] || []), option];
+
+                              const updatedFilters = {
+                                ...selectedFilters,
+                                [category]: updatedOptions,
+                              };
+
+                              setSelectedFilters(updatedFilters);
+
+                              const query = new URLSearchParams();
+                              Object.keys(updatedFilters).forEach(key => {
+                                if (updatedFilters[key]?.length > 0) {
+                                  updatedFilters[key].forEach(val => query.append(key, val));
+                                }
+                              });
+
+                              navigate(`/filter-results?${query.toString()}`);
+                            }}
+                          />
+                          {option}
+                        </li>
+                      );
+                    })}
                   </ul>
                 )}
               </div>
@@ -104,7 +122,7 @@ function Navbar() {
 
 const menuItems = [
   { text: 'Genre', type: 'dropdown', options: ['Action', 'Comedy', 'Horror', 'Drama', 'Sci-Fi', 'Romance', 'Thriller', 'Fantasy', 'Adventure', 'Animation'] },
-  { text: 'Country', type: 'dropdown', options: ['USA', 'UK', 'France', 'Germany'] },
+  { text: 'Country', type: 'dropdown', options: ['USA', 'UK', 'France', 'Germany', 'Turkey', 'India', 'Korea'] },
   { text: 'Year', type: 'dropdown', options: ['2025', '2024', '2023', '2022', '2021', '2020'] },
   { text: 'Content of the Week', path: '/weekly-content', icon: <FaRegCalendarAlt /> },
   { text: 'Subscribe', path: '/subscribe', icon: <FaBell /> },
@@ -174,6 +192,7 @@ const styles = {
   },
   menuItem: {
     position: 'relative',
+    fontFamily: 'sans-serif',
   },
   dropdown: {
     position: 'relative',

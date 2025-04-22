@@ -33,6 +33,7 @@ const Banner = () => {
       transform: "translate(-50%, -50%)",
       textAlign: "center",
       color: "white",
+      fontFamily: 'sans-serif',
     },
     title: {
       fontSize: "42px",

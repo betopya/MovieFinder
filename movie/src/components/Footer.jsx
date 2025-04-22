@@ -96,6 +96,7 @@ const styles = {
     backgroundColor: "#111",
     color: "#fff",
     padding: "50px 50px",
+    fontFamily: 'sans-serif',
     //clipPath: "polygon(0 0, 100% 20%, 100% 100%, 0 100%)",
   },
   

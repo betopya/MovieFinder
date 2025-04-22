@@ -1,90 +1,129 @@
-import { useParams } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 
-function SearchResults() {
-  const { query } = useParams();
+function FilterResult() {
   const [movies, setMovies] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [selectedMovie, setSelectedMovie] = useState(null);
 
-  const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
-  const API_URL = `https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}&query=${query}`;
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const genreParams = queryParams.getAll('genre');
+  const countryParams = queryParams.getAll('country');
+  const yearParams = queryParams.getAll('year');
 
   useEffect(() => {
-    fetch(API_URL)
-      .then((res) => res.json())
-      .then((data) => {
-        setMovies(data.results);
-      })
-      .catch((error) => {
-        setError("Error fetching movies");
-        console.error("Error fetching movies:", error);
-      })
-      .finally(() => {
+    const fetchMovies = async () => {
+      setLoading(true);
+      setError(null);
+
+      const genreMap = {
+        Action: 28,
+        Comedy: 35,
+        Horror: 27,
+        Drama: 18,
+        "Sci-Fi": 878,
+        Romance: 10749,
+        Thriller: 53,
+        Fantasy: 14,
+        Adventure: 12,
+        Animation: 16,
+      };
+
+      const countryMap = {
+        USA: "US",
+        UK: "GB",
+        France: "FR",
+        Germany: "DE",
+        Turkey: "TR",
+      };
+
+      try {
+        let url = `https://api.themoviedb.org/3/discover/movie?api_key=${import.meta.env.VITE_TMDB_API_KEY}&`;
+
+        if (genreParams.length > 0) {
+          const genreIds = genreParams.map((g) => genreMap[g]).filter(Boolean).join(',');
+          url += `with_genres=${genreIds}&`;
+        }
+
+        if (countryParams.length > 0) {
+          const countryCodes = countryParams.map((c) => countryMap[c]).filter(Boolean).join(',');
+          url += `with_origin_country=${countryCodes}&`;
+        }
+
+        if (yearParams.length > 0) {
+          url += `year=${yearParams[0]}&`; // sadece ilk yılı alıyoruz
+        }
+
+        url = url.slice(0, -1); // son "&" karakterini temizle
+
+        const response = await fetch(url);
+        if (!response.ok) throw new Error('Error fetching movies');
+        const data = await response.json();
+        if (!data || !data.results || data.results.length === 0) {
+          setError('No movies found');
+        } else {
+          setMovies(data.results);
+        }
+      } catch (err) {
+        setError('Error fetching movies');
+      } finally {
         setLoading(false);
-      });
-  }, [query]);
+      }
+    };
+
+    fetchMovies();
+  }, [location.search]); // query değişirse yeniden çalıştır
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;
 
   return (
     <div style={styles.container}>
-      <h2 style={styles.heading}>More Search Results for: "{query}"</h2>
-      {movies.length > 0 ? (
-        <div style={styles.grid}>
-          {movies.map((movie) => (
-            <div
-              key={movie.id}
-              style={styles.card}
-            >
-              <img
-                src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
-                alt={movie.title}
-                style={styles.poster}
-              />
-              <h3 style={styles.title}>{movie.title}</h3>
-              <p style={styles.overview}>{movie.overview}</p>
-              <button style={styles.infoBtn} onClick={(e) => {
-                e.stopPropagation(); 
-                setSelectedMovie(movie);
-              }}>
-                More Info
-              </button>
-            </div>
-          ))}
-        </div>
-      ) : (
-        <p style={styles.text}>No results found! Try another search. 🎬</p>
-      )}
+      <h2 style={styles.heading}>Filtered Movies</h2>
+      <div style={styles.grid}>
+        {movies.map((movie) => (
+          <div
+            key={movie.id}
+            style={styles.card}
+            onClick={() => setSelectedMovie(movie)}
+          >
+            <img
+              src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
+              alt={movie.title}
+              style={styles.poster}
+            />
+            <h3 style={styles.title}>{movie.title}</h3>
+            <p style={styles.overview}>{movie.overview}</p>
+            <button style={styles.infoBtn}>More Info</button>
+          </div>
+        ))}
+      </div>
 
       {selectedMovie && (
         <div style={styles.modalOverlay} onClick={() => setSelectedMovie(null)}>
           <div style={styles.modalContent} onClick={(e) => e.stopPropagation()}>
-          <h2 style={styles.modalTitle}>{selectedMovie.title}</h2>
-
+            <h2 style={styles.modalTitle}>{selectedMovie.title}</h2>
             <img
               src={`https://image.tmdb.org/t/p/w500${selectedMovie.poster_path}`}
               alt={selectedMovie.title}
-              style={{ width: "100%", borderRadius: "8px" }}
+              style={{ width: '100%', borderRadius: '8px' }}
             />
             <p><strong>Overview:</strong> {selectedMovie.overview}</p>
             <p><strong>Release Date:</strong> {selectedMovie.release_date}</p>
             <p><strong>Rating:</strong> {selectedMovie.vote_average}</p>
 
-
             <div style={{ textAlign: "center", marginTop: "20px" }}>
-            <a
-              href={`https://www.themoviedb.org/movie/${selectedMovie.id}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              style={styles.moreInfoLink}
-            >
-              Go to TMDB
-            </a>
+              <a
+                href={`https://www.themoviedb.org/movie/${selectedMovie.id}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={styles.moreInfoLink}
+              >
+                Go to TMDB
+              </a>
             </div>
-
 
             <br />
             <button style={styles.closeBtn} onClick={() => setSelectedMovie(null)}>
@@ -107,12 +146,6 @@ const styles = {
     fontSize: "24px",
     marginBottom: "10px",
     color: "#b81414",
-  },
-  text: {
-    fontSize: " 38px",
-    color: "black",
-    margin: "60px",
-    fontFamily: 'sans-serif',
   },
   grid: {
     display: 'grid',
@@ -194,11 +227,6 @@ const styles = {
     fontSize: '17px',
     fontFamily: 'sans-serif',
   },
-  modalText: {
-    fontSize: '16px',
-    color: '#333',
-    marginTop: '20px', 
-  },
   modalTitle: {
     textAlign: "center",
     fontSize: "24px",
@@ -232,4 +260,4 @@ const styles = {
   },
 };
 
-export default SearchResults;
+export default FilterResult;

@@ -55,6 +55,7 @@ const styles = {
     padding: "20px",
     textAlign: "center",
     color: "#fff",
+    fontFamily: 'sans-serif',
   },
   title: {
     fontSize: "24px",
