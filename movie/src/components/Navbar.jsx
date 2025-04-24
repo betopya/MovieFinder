@@ -214,7 +214,8 @@ const styles = {
     gap: '5px',
   },
   dropdownMenu: {
-    position: 'absolute',
+    position: 'absolute', // denem
+    
     top: '100%',
     left: 0,
     backgroundColor: '#222',
@@ -239,7 +240,7 @@ const styles = {
     display: 'flex',
     alignItems: 'center',
     gap: '8px',
-    borderRadius: '5px',
+    borderRadius: '5px', // deneme
   },
   linkHover: {
     color: '#b81414',
