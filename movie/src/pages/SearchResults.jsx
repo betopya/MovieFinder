@@ -5,7 +5,7 @@ function SearchResults() {
   const { query } = useParams();
   const [movies, setMovies] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState(null); 
   const [selectedMovie, setSelectedMovie] = useState(null);
 
   const API_KEY = import.meta.env.VITE_TMDB_API_KEY;

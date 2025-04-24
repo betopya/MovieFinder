@@ -1,16 +1,14 @@
 import { useState } from "react";
 import { FaInstagram, FaTwitter, FaYoutube } from "react-icons/fa";
-import logo from "../assets/logo.png"; // Logoyu içe aktardık
+import logo from "../assets/logo.png"; 
 
 function Footer() {
-  // Hover kontrolü için state
   const [hoveredItem, setHoveredItem] = useState(null);
 
   return (
     <footer style={styles.footer}>
       <div style={styles.footerContent}>
 
-        {/* Sol taraf: Logo & Açıklama & Sosyal Medya */}
         <div style={styles.left}>
           <img src={logo} alt="MovieApp Logo" style={styles.logo} />
           <p style={styles.description}>Your friendly movie recommendation platform</p>
@@ -21,12 +19,11 @@ function Footer() {
           </div>
         </div>
 
-        {/* En Popüler Türler */}
         <div style={styles.section}>
           <h3 style={styles.heading}>Most Popular Genres</h3>
           <div style={styles.underline}></div>
           <ul style={styles.list}>
-            {["Comedy", "Horror", "Thriller", "Action"].map((genre, index) => (
+            {["Comedy", "Thriller", "Horror", "Action"].map((genre, index) => (
               <li
                 key={index}
                 style={{
@@ -42,28 +39,27 @@ function Footer() {
           </ul>
         </div>
 
-        {/* Yıla Göre Film  */}
         <div style={styles.section}>
-          <h3 style={styles.heading}>Choose Movie by Year</h3>
+          <h3 style={styles.heading}>Most Popular Country</h3>
           <div style={styles.underline}></div>
           <ul style={styles.list}>
-            {Array.from({ length: 5 }, (_, i) => 2025 - i).map((year) => (
+           {/* {Array.from({ length: 4 }, (_, i) => 2025 - i).map((year) => ( */}
+               {["Germany", "Turkey", "India", "UK"].map((country, index) => (
               <li
-                key={year}
+                key={index}
                 style={{
                   ...styles.listItem,
-                  ...(hoveredItem === year ? styles.listItemHover : {}),
+                  ...(hoveredItem === country ? styles.listItemHover : {}),
                 }}
-                onMouseEnter={() => setHoveredItem(year)}
+                onMouseEnter={() => setHoveredItem(country)}
                 onMouseLeave={() => setHoveredItem(null)}
               >
-                {year}
+                {country}
               </li>
             ))}
           </ul>
         </div>
 
-        {/* Menü */}
         <div style={styles.section}>
           <h3 style={styles.heading}>Menu</h3>
           <div style={styles.underline}></div>
@@ -88,7 +84,6 @@ function Footer() {
     </footer>
   );
 }
-
 
 const styles = {
   footer: {

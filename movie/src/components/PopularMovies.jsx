@@ -24,7 +24,7 @@ function PopularMovies() {
       <Swiper
         modules={[Navigation, Pagination, Autoplay]}
         spaceBetween={10}
-        slidesPerView={6}  // Aynı anda kaç film gözükeceği
+        slidesPerView={7} 
         navigation
         pagination={{ clickable: true }}
         autoplay={{ delay: 3000, disableOnInteraction: false }}
@@ -32,6 +32,7 @@ function PopularMovies() {
           320: { slidesPerView: 2 },
           640: { slidesPerView: 3 },
           1024: { slidesPerView: 5 },
+          1288: { slidesPerView: 7 },
         }}
         style={{ paddingBottom: "50px" }}
       >

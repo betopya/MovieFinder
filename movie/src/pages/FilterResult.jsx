@@ -53,7 +53,7 @@ function FilterResult() {
         }
 
         if (yearParams.length > 0) {
-          url += `year=${yearParams[0]}&`; // sadece ilk yılı alıyoruz
+          url += `year=${yearParams[0]}&`; // sadece ilk yılı al
         }
 
         url = url.slice(0, -1); // son "&" karakterini temizle
@@ -74,7 +74,7 @@ function FilterResult() {
     };
 
     fetchMovies();
-  }, [location.search]); // query değişirse yeniden çalıştır
+  }, [location.search]); 
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;

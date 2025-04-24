@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import logo from '../assets/logo.png'; // Logo
+import logo from '../assets/logo.png'; 
 import { FaSearch, FaRegCalendarAlt, FaBell, FaChevronDown } from 'react-icons/fa';
 
 function Navbar() {
@@ -121,7 +121,7 @@ function Navbar() {
 }
 
 const menuItems = [
-  { text: 'Genre', type: 'dropdown', options: ['Action', 'Comedy', 'Horror', 'Drama', 'Sci-Fi', 'Romance', 'Thriller', 'Fantasy', 'Adventure', 'Animation'] },
+  { text: 'Genre', type: 'dropdown', options: ['Action', 'Comedy', 'Horror', 'Drama', 'Sci-Fi', 'Romance', 'Thriller', 'Fantasy', 'Adventure', 'Animation', 'War'] },
   { text: 'Country', type: 'dropdown', options: ['USA', 'UK', 'France', 'Germany', 'Turkey', 'India', 'Korea'] },
   { text: 'Year', type: 'dropdown', options: ['2025', '2024', '2023', '2022', '2021', '2020'] },
   { text: 'Content of the Week', path: '/weekly-content', icon: <FaRegCalendarAlt /> },
@@ -214,8 +214,7 @@ const styles = {
     gap: '5px',
   },
   dropdownMenu: {
-    position: 'absolute', // denem
-    
+    position: 'absolute', 
     top: '100%',
     left: 0,
     backgroundColor: '#222',
@@ -240,7 +239,7 @@ const styles = {
     display: 'flex',
     alignItems: 'center',
     gap: '8px',
-    borderRadius: '5px', // deneme
+    borderRadius: '5px', 
   },
   linkHover: {
     color: '#b81414',
