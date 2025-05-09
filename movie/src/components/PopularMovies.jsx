@@ -11,12 +11,19 @@ const BASE_URL = "https://api.themoviedb.org/3";
 function PopularMovies() {
   const [movies, setMovies] = useState([]);
 
-  useEffect(() => {
-    fetch(`${BASE_URL}/movie/popular?api_key=${API_KEY}&language=en-US&page=1`)
-      .then((response) => response.json())
-      .then((data) => setMovies(data.results))
-      .catch((error) => console.error("Error fetching movies:", error));
-  }, []);
+ useEffect(() => {
+  const fetchMovies = async () => {
+    try {
+      const response = await fetch(`${BASE_URL}/movie/popular?api_key=${API_KEY}&language=en-US&page=1`);
+      const data = await response.json();
+      setMovies(data.results);
+    } catch (error) {
+      console.error("Error fetching movies:", error);
+    }
+  };
+
+  fetchMovies();
+}, []);
 
   return (
     <div style={styles.container}>
